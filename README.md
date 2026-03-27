@@ -17,12 +17,6 @@ It uses lossy compression with conservative parameters to reduce file size while
 3. Restart the application once setup is complete
 4. Provide the path to your RPG Maker MV/MZ game
 
-The application will:
-
-* Decrypt the game files
-* Compress image and audio assets
-* Output the results to the `Output` folder upon completion
-
 ## Installing Compressed Assets
 
 After compression:
