@@ -26,11 +26,12 @@ namespace Compressor
         public static void Decrypt(string gamePath, string outputPath)
         {
             // TODO: Add support for more than rpg maker mv/mz games.
+            Util.WriteLineMultiColored("[Yellow]Decrypting...");
 
             ProcessStartInfo processInfo = new ProcessStartInfo()
             {
                 FileName = RPGMakerDecryptor,
-                Arguments = $"\"{gamePath}\" --output=\"{outputPath}\" --directories=\"img,audio,data\"",
+                Arguments = $"\"{gamePath}\" --output=\"{outputPath}\" --directories=\"img,audio,data\" --files=\"none\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true
@@ -38,14 +39,19 @@ namespace Compressor
 
             Process decryptor = Process.Start(processInfo);
             decryptor.WaitForExit();
+
+            Util.RewriteLastLine("[Green]Decrypting... Done!", true);
         }
         // Encrypts RPG Maker files back to their original file format and outputs the files into the encrpytedPath provided.
-        public static void Encrypt(string decryptedPath, string encryptedPath)
+        public static void Encrypt(string gamePath, string outputPath)
         {
+            Util.WriteLineMultiColored("[Yellow]Finishing up...");
+
+            // TODO: Add functionality to properly encrypt files.
             ProcessStartInfo processInfo = new ProcessStartInfo()
             {
                 FileName = RPGMakerDecryptor,
-                Arguments = $"\"{decryptedPath}\" --output=\"{encryptedPath}\" --reconstruct-project",
+                Arguments = $"\"{gamePath}\" --output=\"{outputPath}\" --reconstruct-project",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true
@@ -54,6 +60,8 @@ namespace Compressor
             // This only works with older rpg maker games (which are currently not supported but i will keep the code here.)
             Process encryptor = Process.Start(processInfo);
             encryptor.WaitForExit();
+
+            Util.RewriteLastLine("[Green]Finishing up... Done!", true);
         }
         // Compresses all png files inside the given game folder.
         public static void Compress(string gamePath, CompressionArgs args)

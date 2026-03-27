@@ -10,15 +10,21 @@ namespace Compressor
     {
         public static readonly string exeDirectory = AppContext.BaseDirectory;
         public static readonly string outputDirectory = Path.Combine(exeDirectory, "Output");
-        public static readonly string processingDirectory = Path.Combine(exeDirectory, "Processing");
+        public static readonly string processingDirectory = Path.Combine(Path.GetTempPath(), "RPGMakerCompressor");
         public static readonly string librariesDirectory = Path.Combine(exeDirectory, "Libraries");
 
-        static void CreateIfNotExist(string directoryPath)
+        static void CreateIfNotExist(string directoryPath, bool DeleteIfExists=false)
         {
-            if (!Directory.Exists(directoryPath))
+            if (DeleteIfExists && Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(directoryPath);
+                Directory.Delete(directoryPath, true);
             }
+            else if (Directory.Exists(directoryPath))
+            {
+                return;
+            }
+
+            Directory.CreateDirectory(directoryPath);
         }
 
         static void Exit()
@@ -46,13 +52,11 @@ namespace Compressor
 
             // Create required directories on first use.
             CreateIfNotExist(outputDirectory);
-            CreateIfNotExist(processingDirectory);
+            CreateIfNotExist(processingDirectory, true);
 
             CompressionArgs compressionArgs = new CompressionArgs();
 
-            string gamePath = Util.QuestionInput("[Yellow]Input game path: ", true);
-
-            Console.Clear();
+            string gamePath = Util.QuestionInput("[Gray]Input game path: ", true);
 
             if (!Directory.Exists(gamePath))
             {
@@ -61,19 +65,15 @@ namespace Compressor
                 return;
             }
 
-            compressionArgs.CompressAudio = Util.QuestionInput("[Yellow]Compress audio? ([Green]Y[Yellow]/[Red]N[Yellow]): ", true) == "y";
-            Console.Clear();
-
-            compressionArgs.CompressImages = Util.QuestionInput("[Yellow]Use lossy compression? ([Green]Y[Yellow]/[Red]N[Yellow]): ", true) == "y";
-            Console.Clear();
+            compressionArgs.CompressAudio = Util.QuestionInput("[Gray]Compress audio? ([Green]Y[Yellow]/[Red]N[Gray]): ", true, true).ToLower() == "y";
+            compressionArgs.CompressImages = Util.QuestionInput("[Gray]Use lossy compression? ([Green]Y[Yellow]/[Red]N[Gray]): ", true, true).ToLower() == "y";
 
             if (compressionArgs.CompressImages)
             {
-                compressionArgs.OptimizeImages = Util.QuestionInput("[Yellow]Optimize results? This process may take a long time. ([Green]Y[Yellow]/[Red]N[Yellow]): ", true) == "y";
-                Console.Clear();
+                compressionArgs.OptimizeImages = Util.QuestionInput("[Gray]Optimize results? This process may take a long time. ([Green]Y[Yellow]/[Red]N[Gray]): ", true, true).ToLower() == "y";
             }
 
-            Util.WriteLineMultiColored("[Yellow]Decrypting...");
+            Console.Clear();
 
             string gameFolderName = Path.GetFileName(gamePath);
             string decryptedGamePath = Path.Combine(processingDirectory, gameFolderName);
@@ -81,11 +81,11 @@ namespace Compressor
 
             GameHandler.Decrypt(gamePath, decryptedGamePath);
 
-            Util.RewriteLastLine("[Green]Decrypting... Done!", true);
+            long preCompressionSize = Util.GetFolderSize(decryptedGamePath);
 
-            GameHandler.Compress(decryptedGamePath, compressionArgs);
+            //GameHandler.Compress(decryptedGamePath, compressionArgs);
 
-            Util.WriteLineMultiColored("[Yellow]Finishing up...");
+            long postCompressionSize = Util.GetFolderSize(decryptedGamePath);
 
             GameHandler.Encrypt(decryptedGamePath, outputGamePath);
 
@@ -94,9 +94,8 @@ namespace Compressor
                 Directory.Delete(decryptedGamePath, true);
             }
 
-            Util.RewriteLastLine("[Green]Finishing up... Done!", true);
-
-            Util.WriteLineColored("Complete!", ConsoleColor.Green);
+            Util.WriteLineMultiColored("[Green]Complete!");
+            Util.WriteLineMultiColored($"Size reduced by [Green]{Math.Floor((decimal)(postCompressionSize / preCompressionSize * 100.0))}%");
 
             Exit();
         }

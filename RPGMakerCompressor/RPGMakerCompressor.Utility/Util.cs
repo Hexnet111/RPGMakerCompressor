@@ -67,6 +67,13 @@ namespace Utility
             return coloredText;
         }
 
+        public static long GetFolderSize(string folderPath)
+        {
+            return Directory
+                .EnumerateFiles(folderPath, "*", SearchOption.AllDirectories)
+                .Sum(file => new FileInfo(file).Length);
+        }
+
         // Delete's the smaller file of the 2 files provided.
         // Returns 2 if file 2 was smaller, else returns 1 if file 1 was smaller.
         public static int KeepSmallestFile(string file1Path, string file2Path)
@@ -86,7 +93,6 @@ namespace Utility
                 return 1;
             }
         }
-
         public static void WriteMultiColored(string Text)
         {
             // Input example: [Yellow]This is yellow text! [Green]This is green text!
@@ -140,8 +146,13 @@ namespace Utility
             Console.WriteLine(Text);
             Console.ResetColor();
         }
-        public static string QuestionInput(string Question, bool ColoredText = false)
+        public static string QuestionInput(string Question, bool ColoredText = false, bool ClearConsole = false)
         {
+            if (ClearConsole)
+            {
+                Console.Clear();
+            }
+
             if (ColoredText)
             {
                 WriteMultiColored(Question);
