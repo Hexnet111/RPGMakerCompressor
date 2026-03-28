@@ -101,6 +101,16 @@ namespace Compressor
             {
                 compressor.CompressAudio();
             }
+            else
+            {
+                // No need to keep the audio folder if the audio isn't compressed.
+                string audioFolder = Path.Combine(gamePath, "audio");
+
+                if (Directory.Exists(audioFolder))
+                {
+                    Directory.Delete(audioFolder, true);
+                }
+            }
 
             // Use PNGQuant to lossly compress the image files.
             if (args.CompressImages)
