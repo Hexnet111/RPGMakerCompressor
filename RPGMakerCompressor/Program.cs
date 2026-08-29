@@ -81,7 +81,7 @@ namespace Compressor
 
             GameHandler.Decrypt(gamePath, decryptedGamePath);
 
-            long gameFolderSize = Util.GetFolderSize(gameFolderName);
+            long gameFolderSize = Util.GetFolderSize(gamePath);
             long preCompressionSize = Util.GetFolderSize(decryptedGamePath);
 
             GameHandler.Compress(decryptedGamePath, compressionArgs);
