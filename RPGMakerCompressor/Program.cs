@@ -81,11 +81,12 @@ namespace Compressor
 
             GameHandler.Decrypt(gamePath, decryptedGamePath);
 
+            long gameFolderSize = Util.GetFolderSize(gameFolderName);
             long preCompressionSize = Util.GetFolderSize(decryptedGamePath);
 
             GameHandler.Compress(decryptedGamePath, compressionArgs);
 
-            long postCompressionSize = Util.GetFolderSize(decryptedGamePath);
+            long postCompressionSize = (gameFolderSize - preCompressionSize) + Util.GetFolderSize(decryptedGamePath);
 
             GameHandler.Encrypt(decryptedGamePath, outputGamePath);
 
@@ -94,8 +95,10 @@ namespace Compressor
                 Directory.Delete(decryptedGamePath, true);
             }
 
+            decimal sizeReduction = (1m - (decimal)postCompressionSize / preCompressionSize) * 100m;
+
             Util.WriteLineMultiColored("[Green]Complete!");
-            Util.WriteLineMultiColored($"Size reduced by [Green]{Math.Floor((decimal)(postCompressionSize / preCompressionSize * 100.0))}%");
+            Util.WriteLineMultiColored($"Size reduced by [Green]{sizeReduction}%");
 
             Exit();
         }
