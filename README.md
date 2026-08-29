@@ -1,7 +1,7 @@
 # RPGMakerCompressor
 
 RPGMakerCompressor is a console-based application used to compress RPG Maker MV/MZ game assets.
-
+<br>
 It uses lossy compression with conservative parameters to reduce file size while minimizing noticeable visual and audio quality loss.
 
 ## Features
@@ -31,9 +31,9 @@ After compression:
 These dependencies are automatically downloaded on first launch:
 
 * [RPGMakerDecrypter](https://github.com/Hexnet111/RPGMakerDecrypter) (fork) - Decrypting of RPG Maker game files
-* [FFmpeg](https://github.com/BtbN/FFmpeg-Builds) — Audio processing
-* [oxipng](https://github.com/oxipng/oxipng) — PNG optimization
-* [pngquant](https://pngquant.org/) — Lossy PNG compression
+* [FFmpeg](https://github.com/BtbN/FFmpeg-Builds) - Audio processing
+* [oxipng](https://github.com/oxipng/oxipng) - PNG optimization
+* [pngquant](https://pngquant.org/) - Lossy PNG compression
 
 ## Notes
 
