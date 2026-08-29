@@ -95,7 +95,7 @@ namespace Compressor
                 Directory.Delete(decryptedGamePath, true);
             }
 
-            decimal sizeReduction = (1m - (decimal)postCompressionSize / preCompressionSize) * 100m;
+            decimal sizeReduction = (1m - (decimal)preCompressionSize / postCompressionSize) * 100m;
 
             Util.WriteLineMultiColored("[Green]Complete!");
             Util.WriteLineMultiColored($"Size reduced by [Green]{sizeReduction}%");
